@@ -2,7 +2,8 @@ name: Sync Signal
 
 on:
   schedule:
-    - cron: '0 * * * *'   # every hour, auto-checks for changes
+    - cron: '*/5 * * * 1-5'   # every 5 mins on weekdays
+    - cron: '0 * * * 0,6'     # every hour on weekends
   workflow_dispatch:       # manual trigger from GitHub UI
 
 permissions:
