@@ -1,5 +1,10 @@
 {
-  "signal": "BULLISH",
-  "date": "2026-09-11",
-  "updated": "2026-09-21 11:35 IST"
+  "signal": "PULLBACK",
+  "date": "2026-09-16",
+  "daily_change": -0.30,
+  "daily_dir": "DN",
+  "weekly_change": 16.91,
+  "weekly_dir": "UP",
+  "risk": "0.5%",
+  "updated": "2026-09-21 11:39 IST"
 }

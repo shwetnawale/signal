@@ -2,156 +2,179 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Signal</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *{margin:0;padding:0;box-sizing:border-box;}
 
-    body {
-      background: #0a0a0a;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    body{
+      background:#0d0d0d;
+      color:#fff;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:24px 16px;
     }
 
-    .container {
-      text-align: center;
-      padding: 40px 24px;
-      width: 100%;
-      max-width: 420px;
+    .wrap{width:100%;max-width:400px;}
+
+    /* ── top label ── */
+    .top-label{
+      font-size:10px;font-weight:700;letter-spacing:3px;
+      text-transform:uppercase;color:#444;
+      text-align:center;margin-bottom:24px;
     }
 
-    .label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #555;
-      margin-bottom: 32px;
+    /* ── main card ── */
+    .card{
+      border-radius:20px;padding:32px 24px;
+      margin-bottom:16px;
+      transition:all .4s ease;
     }
+    .card.BULLISH{background:rgba(0,210,90,.07);border:1.5px solid rgba(0,210,90,.35);}
+    .card.BEARISH{background:rgba(220,50,50,.07);border:1.5px solid rgba(220,50,50,.35);}
+    .card.PULLBACK{background:rgba(248,170,0,.07);border:1.5px solid rgba(248,170,0,.35);}
+    .card.RALLY{background:rgba(130,80,255,.07);border:1.5px solid rgba(130,80,255,.35);}
+    .card.WAIT{background:rgba(100,100,100,.07);border:1.5px solid rgba(100,100,100,.2);}
 
-    .signal-box {
-      border-radius: 24px;
-      padding: 56px 32px;
-      margin-bottom: 32px;
-      transition: all 0.3s ease;
-    }
+    /* badge row */
+    .badge-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
+    .sig-badge{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+    .sig-badge.BULLISH{background:rgba(0,210,90,.15);color:#00d25a;}
+    .sig-badge.BEARISH{background:rgba(220,50,50,.15);color:#dc3232;}
+    .sig-badge.PULLBACK{background:rgba(248,170,0,.15);color:#f8aa00;}
+    .sig-badge.RALLY{background:rgba(130,80,255,.15);color:#8250ff;}
+    .sig-badge.WAIT{background:rgba(100,100,100,.15);color:#666;}
 
-    .signal-box.BUY  { background: rgba(0,200,80,0.08); border: 2px solid rgba(0,200,80,0.3); }
-    .signal-box.SELL { background: rgba(220,50,50,0.08); border: 2px solid rgba(220,50,50,0.3); }
-    .signal-box.WAIT { background: rgba(120,120,120,0.08); border: 2px solid rgba(120,120,120,0.2); }
+    .risk-badge{font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 12px;border-radius:20px;
+      background:rgba(255,255,255,.05);color:#888;border:1px solid rgba(255,255,255,.08);}
 
-    .action {
-      font-size: 72px;
-      font-weight: 900;
-      letter-spacing: -2px;
-      line-height: 1;
-      margin-bottom: 16px;
-    }
+    /* action word */
+    .action{font-size:64px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;}
+    .action.BUY{color:#00d25a;}
+    .action.SELL{color:#dc3232;}
+    .action.WAIT{color:#555;}
 
-    .action.BUY  { color: #00c850; }
-    .action.SELL { color: #dc3232; }
-    .action.WAIT { color: #777; }
+    /* label under action */
+    .sig-name{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;opacity:.7;}
+    .sig-name.BUY{color:#00d25a;}
+    .sig-name.SELL{color:#dc3232;}
+    .sig-name.WAIT{color:#555;}
 
-    .signal-name {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+    .sig-desc{font-size:12px;color:#555;line-height:1.6;margin-top:4px;}
 
-    .signal-name.BUY  { color: rgba(0,200,80,0.7); }
-    .signal-name.SELL { color: rgba(220,50,50,0.7); }
-    .signal-name.WAIT { color: #555; }
+    /* ── change boxes ── */
+    .changes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+    .chg-box{background:#141414;border-radius:12px;padding:14px 16px;border:1px solid #1e1e1e;}
+    .chg-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:6px;}
+    .chg-val{font-size:18px;font-weight:800;line-height:1;}
+    .chg-val.up{color:#00d25a;}
+    .chg-val.dn{color:#dc3232;}
+    .chg-sub{font-size:10px;color:#444;margin-top:3px;}
 
-    .meta {
-      font-size: 12px;
-      color: #444;
-      line-height: 2;
-    }
-
-    .meta span { color: #666; }
-
-    .dot {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      margin-right: 6px;
-      animation: pulse 2s infinite;
-    }
-
-    .dot.BUY  { background: #00c850; }
-    .dot.SELL { background: #dc3232; }
-    .dot.WAIT { background: #555; animation: none; }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
-
-    #status {
-      font-size: 11px;
-      color: #333;
-      margin-top: 40px;
-      letter-spacing: 1px;
-    }
+    /* meta */
+    .meta{text-align:center;font-size:10px;color:#333;line-height:2;}
+    .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;background:#333;}
+    .dot.live{background:#00d25a;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="label">Macro Liquidity Signal</div>
+<div class="wrap">
 
-    <div class="signal-box WAIT" id="signalBox">
-      <div class="action WAIT" id="actionText">—</div>
-      <div class="signal-name WAIT" id="signalName">Loading...</div>
+  <div class="top-label">Macro Liquidity Signal</div>
+
+  <!-- main card -->
+  <div class="card WAIT" id="card">
+    <div class="badge-row">
+      <span class="sig-badge WAIT" id="sigBadge">—</span>
+      <span class="risk-badge" id="riskBadge">—</span>
     </div>
-
-    <div class="meta">
-      <span id="dotWrap"><span class="dot WAIT" id="dot"></span></span>
-      <span id="dateText">—</span><br>
-      Updated: <span id="updatedText">—</span>
-    </div>
-
-    <div id="status">auto-refreshes every hour</div>
+    <div class="action WAIT" id="actionText">—</div>
+    <div class="sig-name WAIT" id="sigName">Loading...</div>
+    <div class="sig-desc" id="sigDesc"></div>
   </div>
 
-  <script>
-    async function loadSignal() {
-      try {
-        const res = await fetch('signal.json?t=' + Date.now());
-        const d   = await res.json();
+  <!-- changes -->
+  <div class="changes">
+    <div class="chg-box">
+      <div class="chg-lbl">vs Yesterday</div>
+      <div class="chg-val" id="dailyVal">—</div>
+      <div class="chg-sub">Daily Change</div>
+    </div>
+    <div class="chg-box">
+      <div class="chg-lbl">vs 5 Days Ago</div>
+      <div class="chg-val" id="weeklyVal">—</div>
+      <div class="chg-sub">Weekly Tide</div>
+    </div>
+  </div>
 
-        const sig = (d.signal || '').toUpperCase();
+  <!-- meta -->
+  <div class="meta">
+    <span class="dot live" id="liveDot"></span>
+    <span id="dateText">—</span><br>
+    Updated: <span id="updText">—</span>
+  </div>
 
-        // Map to BUY / SELL
-        let action = 'WAIT';
-        let cls    = 'WAIT';
-        if (sig === 'BULLISH' || sig === 'RALLY')    { action = 'BUY';  cls = 'BUY'; }
-        if (sig === 'BEARISH' || sig === 'PULLBACK') { action = 'SELL'; cls = 'SELL'; }
+</div>
 
-        document.getElementById('signalBox').className  = 'signal-box ' + cls;
-        document.getElementById('actionText').className = 'action '      + cls;
-        document.getElementById('signalName').className = 'signal-name ' + cls;
-        document.getElementById('dot').className        = 'dot '         + cls;
+<script>
+  const MAP = {
+    BULLISH:  { action:'BUY',  cls:'BUY',  badge:'BULLISH',  risk:'1%',  desc:'Weekly UP + Daily UP → Full bull tide. Buy session low sweeps at full risk.' },
+    BEARISH:  { action:'SELL', cls:'SELL', badge:'BEARISH',  risk:'1%',  desc:'Weekly DN + Daily DN → Full bear tide. Sell session high sweeps at full risk.' },
+    PULLBACK: { action:'BUY',  cls:'BUY',  badge:'PULLBACK', risk:'0.5%',desc:'Weekly UP + Daily DN → Main tide bullish, today dipped. Buy sweeps at half risk.' },
+    RALLY:    { action:'SELL', cls:'SELL', badge:'RALLY',    risk:'0.5%',desc:'Weekly DN + Daily UP → Main tide bearish, today popped. Sell sweeps at half risk.' },
+  };
 
-        document.getElementById('actionText').textContent  = action;
-        document.getElementById('signalName').textContent  = sig;
-        document.getElementById('dateText').textContent    = d.date    || '—';
-        document.getElementById('updatedText').textContent = d.updated || '—';
+  async function load() {
+    try {
+      const res = await fetch('signal.json?t=' + Date.now());
+      const d   = await res.json();
+      const sig = (d.signal || '').toUpperCase();
+      const m   = MAP[sig] || { action:'—', cls:'WAIT', badge:'—', risk:'—', desc:'Waiting for data.' };
 
-      } catch(e) {
-        document.getElementById('actionText').textContent = '—';
-        document.getElementById('signalName').textContent = 'Error loading';
-      }
+      // card
+      document.getElementById('card').className       = 'card '     + sig;
+      document.getElementById('sigBadge').className   = 'sig-badge ' + sig;
+      document.getElementById('sigBadge').textContent = m.badge + ' STATE';
+      document.getElementById('riskBadge').textContent= 'RISK ' + m.risk;
+
+      const act = document.getElementById('actionText');
+      act.className   = 'action ' + m.cls;
+      act.textContent = m.action;
+
+      const nm = document.getElementById('sigName');
+      nm.className   = 'sig-name ' + m.cls;
+      nm.textContent = m.badge;
+
+      document.getElementById('sigDesc').textContent = m.desc;
+
+      // daily change
+      const dc  = parseFloat(d.daily_change || 0);
+      const dEl = document.getElementById('dailyVal');
+      dEl.textContent = (dc >= 0 ? '+' : '') + dc.toFixed(2) + ' Bn (' + (d.daily_dir === 'UP' ? '▲ UP' : '▼ DN') + ')';
+      dEl.className   = 'chg-val ' + (d.daily_dir === 'UP' ? 'up' : 'dn');
+
+      // weekly change
+      const wc  = parseFloat(d.weekly_change || 0);
+      const wEl = document.getElementById('weeklyVal');
+      wEl.textContent = (wc >= 0 ? '+' : '') + wc.toFixed(2) + ' Bn (' + (d.weekly_dir === 'UP' ? '▲ UP' : '▼ DN') + ')';
+      wEl.className   = 'chg-val ' + (d.weekly_dir === 'UP' ? 'up' : 'dn');
+
+      document.getElementById('dateText').textContent = d.date    || '—';
+      document.getElementById('updText').textContent  = d.updated || '—';
+      document.getElementById('liveDot').className    = 'dot live';
+
+    } catch(e) {
+      document.getElementById('sigName').textContent = 'Error loading signal';
     }
+  }
 
-    loadSignal();
-    setInterval(loadSignal, 60 * 60 * 1000); // refresh every hour
-  </script>
+  load();
+  setInterval(load, 60 * 60 * 1000); // refresh every hour
+</script>
 </body>
 </html>

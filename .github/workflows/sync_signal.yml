@@ -2,8 +2,8 @@ name: Sync Signal
 
 on:
   schedule:
-    - cron: '0 * * * *'   # every hour
-  workflow_dispatch:       # manual trigger too
+    - cron: '0 * * * *'   # every hour, auto-checks for changes
+  workflow_dispatch:       # manual trigger from GitHub UI
 
 permissions:
   contents: write
@@ -14,56 +14,93 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch & extract signal
+      - name: Fetch signal from nawale_mint and extract
         run: |
-          python3 - <<'EOF'
+          python3 - <<'PYEOF'
           import json, urllib.request, datetime
 
           url = "https://raw.githubusercontent.com/shwetnawale/nawale_mint/main/data/net_liquidity_data.json"
           with urllib.request.urlopen(url) as r:
               raw = json.loads(r.read())
 
-          # Get last entry with a real signal
+          entries = raw.get("data", [])
+
+          # Find last entry with a real signal
           last = None
-          for entry in reversed(raw.get("data", [])):
-              s = entry.get("signal", "-")
-              if s and s not in ["-", ""]:
-                  last = entry
+          for e in reversed(entries):
+              if e.get("signal", "-") not in ["-", "", None]:
+                  last = e
                   break
 
-          sig    = last["signal"] if last else "-"
-          date   = last["date"]   if last else "-"
-          ist    = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
+          if not last:
+              print("No valid signal found")
+              exit(0)
+
+          sig   = last["signal"].upper()
+          date  = last["date"]
+
+          # daily change = d_change from last entry
+          daily_change = round(float(last.get("d_change", 0) or 0), 2)
+          daily_dir    = last.get("d_sig", "-")   # "UP" or "DN"
+
+          # weekly change = compare last entry net vs 5 entries ago
+          weekly_change = 0.0
+          weekly_dir    = "-"
+          net_today = float(last.get("net", 0) or 0)
+          if len(entries) >= 6:
+              five_ago = entries[-6]
+              net_5ago = float(five_ago.get("net", 0) or 0)
+              weekly_change = round(net_today - net_5ago, 2)
+              weekly_dir = "UP" if weekly_change >= 0 else "DN"
+
+          # risk sizing
+          risk = "1%" if sig in ["BULLISH", "BEARISH"] else "0.5%"
+
+          ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
           updated = ist.strftime("%Y-%m-%d %H:%M IST")
 
-          out = {"signal": sig, "date": date, "updated": updated}
+          out = {
+              "signal":        sig,
+              "date":          date,
+              "daily_change":  daily_change,
+              "daily_dir":     daily_dir,
+              "weekly_change": weekly_change,
+              "weekly_dir":    weekly_dir,
+              "risk":          risk,
+              "updated":       updated
+          }
 
-          # Read existing to check if signal changed
+          # Check if anything changed
           try:
               with open("signal.json") as f:
                   existing = json.load(f)
           except:
               existing = {}
 
+          changed = (
+              existing.get("signal")        != sig or
+              existing.get("daily_change")  != daily_change or
+              existing.get("weekly_change") != weekly_change
+          )
+
           with open("signal.json", "w") as f:
               json.dump(out, f, indent=2)
               f.write("\n")
 
-          changed = existing.get("signal") != sig
-          print(f"Signal: {sig} | Date: {date} | Changed: {changed}")
+          print(f"Signal: {sig} | Daily: {daily_change} Bn ({daily_dir}) | Weekly: {weekly_change} Bn ({weekly_dir}) | Risk: {risk} | Changed: {changed}")
           with open("changed.txt", "w") as f:
               f.write("yes" if changed else "no")
-          EOF
+          PYEOF
 
-      - name: Commit if signal changed
+      - name: Commit if signal or changes updated
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add signal.json
           if git diff --cached --quiet; then
-            echo "No change in signal — skip commit"
+            echo "No change — skip commit"
           else
             SIGNAL=$(python3 -c "import json; d=json.load(open('signal.json')); print(d['signal'])")
-            git commit -m "🔔 Signal updated: $SIGNAL"
+            git commit -m "Signal: $SIGNAL"
             git push
           fi
