@@ -1,10 +1,10 @@
 {
-  "signal": "PULLBACK",
-  "date": "2026-09-16",
-  "daily_change": -0.30,
+  "signal": "BEARISH",
+  "date": "2026-09-18",
+  "daily_change": -0.3,
   "daily_dir": "DN",
-  "weekly_change": 16.91,
-  "weekly_dir": "UP",
-  "risk": "0.5%",
-  "updated": "2026-09-21 11:39 IST"
+  "weekly_change": -139.87,
+  "weekly_dir": "DN",
+  "risk": "1%",
+  "updated": "2026-09-22 00:13 IST"
 }
