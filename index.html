@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      text-align: center;
+      padding: 40px 24px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 32px;
+    }
+
+    .signal-box {
+      border-radius: 24px;
+      padding: 56px 32px;
+      margin-bottom: 32px;
+      transition: all 0.3s ease;
+    }
+
+    .signal-box.BUY  { background: rgba(0,200,80,0.08); border: 2px solid rgba(0,200,80,0.3); }
+    .signal-box.SELL { background: rgba(220,50,50,0.08); border: 2px solid rgba(220,50,50,0.3); }
+    .signal-box.WAIT { background: rgba(120,120,120,0.08); border: 2px solid rgba(120,120,120,0.2); }
+
+    .action {
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .action.BUY  { color: #00c850; }
+    .action.SELL { color: #dc3232; }
+    .action.WAIT { color: #777; }
+
+    .signal-name {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .signal-name.BUY  { color: rgba(0,200,80,0.7); }
+    .signal-name.SELL { color: rgba(220,50,50,0.7); }
+    .signal-name.WAIT { color: #555; }
+
+    .meta {
+      font-size: 12px;
+      color: #444;
+      line-height: 2;
+    }
+
+    .meta span { color: #666; }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    .dot.BUY  { background: #00c850; }
+    .dot.SELL { background: #dc3232; }
+    .dot.WAIT { background: #555; animation: none; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    #status {
+      font-size: 11px;
+      color: #333;
+      margin-top: 40px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="label">Macro Liquidity Signal</div>
+
+    <div class="signal-box WAIT" id="signalBox">
+      <div class="action WAIT" id="actionText">—</div>
+      <div class="signal-name WAIT" id="signalName">Loading...</div>
+    </div>
+
+    <div class="meta">
+      <span id="dotWrap"><span class="dot WAIT" id="dot"></span></span>
+      <span id="dateText">—</span><br>
+      Updated: <span id="updatedText">—</span>
+    </div>
+
+    <div id="status">auto-refreshes every hour</div>
+  </div>
+
+  <script>
+    async function loadSignal() {
+      try {
+        const res = await fetch('signal.json?t=' + Date.now());
+        const d   = await res.json();
+
+        const sig = (d.signal || '').toUpperCase();
+
+        // Map to BUY / SELL
+        let action = 'WAIT';
+        let cls    = 'WAIT';
+        if (sig === 'BULLISH' || sig === 'RALLY')    { action = 'BUY';  cls = 'BUY'; }
+        if (sig === 'BEARISH' || sig === 'PULLBACK') { action = 'SELL'; cls = 'SELL'; }
+
+        document.getElementById('signalBox').className  = 'signal-box ' + cls;
+        document.getElementById('actionText').className = 'action '      + cls;
+        document.getElementById('signalName').className = 'signal-name ' + cls;
+        document.getElementById('dot').className        = 'dot '         + cls;
+
+        document.getElementById('actionText').textContent  = action;
+        document.getElementById('signalName').textContent  = sig;
+        document.getElementById('dateText').textContent    = d.date    || '—';
+        document.getElementById('updatedText').textContent = d.updated || '—';
+
+      } catch(e) {
+        document.getElementById('actionText').textContent = '—';
+        document.getElementById('signalName').textContent = 'Error loading';
+      }
+    }
+
+    loadSignal();
+    setInterval(loadSignal, 60 * 60 * 1000); // refresh every hour
+  </script>
+</body>
+</html>

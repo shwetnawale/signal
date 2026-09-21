@@ -1,0 +1,69 @@
+name: Sync Signal
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour
+  workflow_dispatch:       # manual trigger too
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch & extract signal
+        run: |
+          python3 - <<'EOF'
+          import json, urllib.request, datetime
+
+          url = "https://raw.githubusercontent.com/shwetnawale/nawale_mint/main/data/net_liquidity_data.json"
+          with urllib.request.urlopen(url) as r:
+              raw = json.loads(r.read())
+
+          # Get last entry with a real signal
+          last = None
+          for entry in reversed(raw.get("data", [])):
+              s = entry.get("signal", "-")
+              if s and s not in ["-", ""]:
+                  last = entry
+                  break
+
+          sig    = last["signal"] if last else "-"
+          date   = last["date"]   if last else "-"
+          ist    = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
+          updated = ist.strftime("%Y-%m-%d %H:%M IST")
+
+          out = {"signal": sig, "date": date, "updated": updated}
+
+          # Read existing to check if signal changed
+          try:
+              with open("signal.json") as f:
+                  existing = json.load(f)
+          except:
+              existing = {}
+
+          with open("signal.json", "w") as f:
+              json.dump(out, f, indent=2)
+              f.write("\n")
+
+          changed = existing.get("signal") != sig
+          print(f"Signal: {sig} | Date: {date} | Changed: {changed}")
+          with open("changed.txt", "w") as f:
+              f.write("yes" if changed else "no")
+          EOF
+
+      - name: Commit if signal changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add signal.json
+          if git diff --cached --quiet; then
+            echo "No change in signal — skip commit"
+          else
+            SIGNAL=$(python3 -c "import json; d=json.load(open('signal.json')); print(d['signal'])")
+            git commit -m "🔔 Signal updated: $SIGNAL"
+            git push
+          fi
