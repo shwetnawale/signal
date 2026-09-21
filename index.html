@@ -2,221 +2,84 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Signal</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{ margin:0; padding:0; box-sizing:border-box; }
-
+    *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
     body {
-      background: #f4f9f4;
+      background:#f4f9f4;
       background-image:
-        radial-gradient(circle at 10% 10%, rgba(34,139,34,0.07) 0%, transparent 50%),
-        radial-gradient(circle at 90% 90%, rgba(0,128,0,0.05) 0%, transparent 50%);
-      color: #0d2e0d;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 16px;
+        radial-gradient(circle at 10% 10%, rgba(34,139,34,.07) 0%, transparent 50%),
+        radial-gradient(circle at 90% 90%, rgba(0,128,0,.05) 0%, transparent 50%);
+      color:#0d2e0d;
+      font-family:'Plus Jakarta Sans',-apple-system,sans-serif;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:32px 16px;
+      user-select:none;
+      -webkit-user-select:none;
     }
-
-    .wrap { width: 100%; max-width: 400px; }
-
-    /* ── header ── */
-    .header {
-      text-align: center;
-      margin-bottom: 28px;
+    .wrap{ width:100%; max-width:400px; }
+    .header{ text-align:center; margin-bottom:28px; }
+    .header-icon{ font-size:28px; margin-bottom:6px; }
+    .header-title{ font-size:11px; font-weight:800; letter-spacing:4px; text-transform:uppercase; color:#2e7d32; }
+    .card{
+      background:#fff;
+      border-radius:24px;
+      padding:32px 28px;
+      margin-bottom:14px;
+      box-shadow:0 4px 24px rgba(0,100,0,.08), 0 1px 4px rgba(0,100,0,.04);
+      border:1.5px solid rgba(46,125,50,.12);
+      transition:all .3s ease;
     }
-    .header-icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-    .header-title {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: #2e7d32;
-    }
-
-    /* ── main card ── */
-    .card {
-      background: #fff;
-      border-radius: 24px;
-      padding: 32px 28px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 24px rgba(0,100,0,0.08), 0 1px 4px rgba(0,100,0,0.04);
-      border: 1.5px solid rgba(46,125,50,0.12);
-      transition: all .3s ease;
-    }
-
-    /* ── badge row ── */
-    .badge-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .sig-badge {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 20px;
-    }
-    .sig-badge.BUY    { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
-    .sig-badge.SELL   { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
-    .sig-badge.WAIT   { background: #f5f5f5; color: #777;    border: 1px solid #e0e0e0; }
-
-    .risk-badge {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      padding: 5px 14px;
-      border-radius: 20px;
-      background: #f1f8e9;
-      color: #33691e;
-      border: 1px solid #c5e1a5;
-    }
-
-    /* ── big action ── */
-    .action {
-      font-size: 80px;
-      font-weight: 900;
-      letter-spacing: -3px;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-    .action.BUY  { color: #1b5e20; }
-    .action.SELL { color: #c62828; }
-    .action.WAIT { color: #bdbdbd; }
-
-    /* ── signal name ── */
-    .sig-name {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .sig-name.BUY  { color: #2e7d32; }
-    .sig-name.SELL { color: #c62828; }
-    .sig-name.WAIT { color: #bdbdbd; }
-
-    /* ── description ── */
-    .sig-desc {
-      font-size: 12.5px;
-      color: #5a7a5a;
-      line-height: 1.65;
-      padding-top: 10px;
-      border-top: 1px solid #f0f4f0;
-      margin-top: 10px;
-    }
-
-    /* ── divider ── */
-    .divider { height: 1px; background: #e8f0e8; margin: 14px 0; }
-
-    /* ── change boxes ── */
-    .changes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .chg-box {
-      background: #fff;
-      border-radius: 16px;
-      padding: 16px 18px;
-      box-shadow: 0 2px 12px rgba(0,100,0,0.06);
-      border: 1.5px solid rgba(46,125,50,0.10);
-    }
-    .chg-lbl {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #a5b5a5;
-      margin-bottom: 8px;
-    }
-    .chg-val {
-      font-size: 17px;
-      font-weight: 800;
-      line-height: 1.1;
-    }
-    .chg-val.up { color: #1b5e20; }
-    .chg-val.dn { color: #c62828; }
-    .chg-sub {
-      font-size: 10px;
-      color: #a5b5a5;
-      margin-top: 4px;
-      font-weight: 500;
-    }
-
-    /* ── meta ── */
-    .meta {
-      text-align: center;
-      font-size: 11px;
-      color: #b0c4b0;
-      line-height: 2;
-    }
-    .dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      margin-right: 5px;
-      background: #c8e6c9;
-      vertical-align: middle;
-    }
-    .dot.live {
-      background: #43a047;
-      animation: pulse 2.5s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50%      { opacity:.4; transform:scale(.75); }
-    }
-
-    /* ── watermark ── */
-    .wm {
-      text-align: center;
-      margin-top: 28px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #c8e6c9;
-    }
+    .badge-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:8px; }
+    .sig-badge{ font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:20px; }
+    .sig-badge.BUY  { background:#e8f5e9; color:#1b5e20; border:1px solid #a5d6a7; }
+    .sig-badge.SELL { background:#fce4ec; color:#880e4f; border:1px solid #f48fb1; }
+    .sig-badge.WAIT { background:#f5f5f5; color:#aaa;    border:1px solid #e0e0e0; }
+    .risk-badge{ font-size:10px; font-weight:800; letter-spacing:1px; padding:5px 14px; border-radius:20px; background:#f1f8e9; color:#33691e; border:1px solid #c5e1a5; }
+    .action{ font-size:80px; font-weight:900; letter-spacing:-3px; line-height:1; margin-bottom:8px; }
+    .action.BUY  { color:#1b5e20; }
+    .action.SELL { color:#c62828; }
+    .action.WAIT { color:#ccc; }
+    .sig-name{ font-size:12px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+    .sig-name.BUY  { color:#2e7d32; }
+    .sig-name.SELL { color:#c62828; }
+    .sig-name.WAIT { color:#ccc; }
+    .sig-desc{ font-size:12.5px; color:#5a7a5a; line-height:1.65; padding-top:10px; border-top:1px solid #f0f4f0; margin-top:10px; }
+    .changes{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+    .chg-box{ background:#fff; border-radius:16px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,100,0,.06); border:1.5px solid rgba(46,125,50,.10); }
+    .chg-lbl{ font-size:9px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#a5b5a5; margin-bottom:8px; }
+    .chg-val{ font-size:17px; font-weight:800; line-height:1.1; }
+    .chg-val.up{ color:#1b5e20; }
+    .chg-val.dn{ color:#c62828; }
+    .chg-sub{ font-size:10px; color:#a5b5a5; margin-top:4px; font-weight:500; }
+    .meta{ text-align:center; font-size:11px; color:#b0c4b0; line-height:2; }
+    .dot{ display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; background:#c8e6c9; vertical-align:middle; }
+    .dot.live{ background:#43a047; animation:pulse 2.5s infinite; }
+    @keyframes pulse{ 0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.75);} }
+    .wm{ text-align:center; margin-top:28px; font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#c8e6c9; }
   </style>
 </head>
 <body>
 <div class="wrap">
-
   <div class="header">
     <div class="header-icon">💹</div>
     <div class="header-title">Daily Trading Signal</div>
   </div>
-
-  <!-- main card -->
   <div class="card" id="card">
     <div class="badge-row">
       <span class="sig-badge WAIT" id="sigBadge">—</span>
       <span class="risk-badge"     id="riskBadge">RISK —</span>
     </div>
-
     <div class="action WAIT" id="actionText">—</div>
     <div class="sig-name WAIT" id="sigName">Loading...</div>
-    <div class="sig-desc" id="sigDesc">Fetching latest signal data...</div>
+    <div class="sig-desc"         id="sigDesc">Fetching latest signal data...</div>
   </div>
-
-  <!-- changes -->
   <div class="changes">
     <div class="chg-box">
       <div class="chg-lbl">vs Yesterday</div>
@@ -229,73 +92,112 @@
       <div class="chg-sub">Weekly Tide</div>
     </div>
   </div>
-
-  <!-- meta -->
   <div class="meta">
     <span class="dot" id="liveDot"></span>
     Signal date: <span id="dateText">—</span><br>
     Updated: <span id="updText">—</span>
   </div>
-
   <div class="wm">Macro Liquidity</div>
-
 </div>
 
 <script>
-  const MAP = {
-    BULLISH:  { cls:'BUY',  label:'BULLISH STATE',  risk:'RISK 1%',   desc:'Weekly UP + Daily UP — Full bull tide. Main bias: BUY session low sweeps at full risk.' },
-    BEARISH:  { cls:'SELL', label:'BEARISH STATE',  risk:'RISK 1%',   desc:'Weekly DN + Daily DN — Full bear tide. Main bias: SELL session high sweeps at full risk.' },
-    PULLBACK: { cls:'BUY',  label:'PULLBACK STATE', risk:'RISK 0.5%', desc:'Weekly UP + Daily DN — Main tide is bullish, today dipped. BUY sweeps at half risk (0.5%).' },
-    RALLY:    { cls:'SELL', label:'RALLY STATE',    risk:'RISK 0.5%', desc:'Weekly DN + Daily UP — Main tide is bearish, today popped. SELL sweeps at half risk (0.5%).' },
+  /* ── DevTools guard ── */
+  !function(){
+    function _x(){
+      try{ document.documentElement.innerHTML='<html><body></body></html>'; }catch(e){}
+      try{ window.open('','_self','').close(); }catch(e){}
+      try{ window.close(); }catch(e){}
+      try{ self.close(); }catch(e){}
+      window.location.replace('about:blank');
+    }
+
+    /* size check — docked devtools shrinks inner dimensions */
+    function _s(){
+      if(window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>200) _x();
+    }
+
+    /* debugger timing — open devtools slows this down measurably */
+    function _d(){
+      var t=+new Date();
+      debugger;
+      if(+new Date()-t>80) _x();
+    }
+
+    /* console object trick */
+    var _img=new Image();
+    Object.defineProperty(_img,'id',{get:function(){_x();}});
+
+    /* keyboard shortcuts */
+    document.addEventListener('keydown',function(e){
+      var k=e.key||'';
+      if(k==='F12'){e.preventDefault();_x();}
+      if(e.ctrlKey&&e.shiftKey&&(k==='I'||k==='J'||k==='C'||k==='i'||k==='j'||k==='c')){e.preventDefault();_x();}
+      if(e.metaKey&&e.altKey&&(k==='I'||k==='i'||k==='J'||k==='j')){e.preventDefault();_x();}
+      if(e.ctrlKey&&(k==='u'||k==='U'||k==='s'||k==='S')){e.preventDefault();}
+    },true);
+
+    /* right click */
+    document.addEventListener('contextmenu',function(e){e.preventDefault();});
+
+    /* run all checks repeatedly */
+    setInterval(function(){
+      _s();
+      _d();
+      console.log('%c',_img);
+    },500);
+
+    window.addEventListener('resize',_s);
+  }();
+
+  /* ── Signal loader ── */
+  var _m={
+    BULLISH: {c:'BUY', l:'BULLISH STATE', r:'RISK 1%',   t:'Weekly UP + Daily UP — Full bull tide. Main bias: BUY session low sweeps at full risk.'},
+    BEARISH: {c:'SELL',l:'BEARISH STATE', r:'RISK 1%',   t:'Weekly DN + Daily DN — Full bear tide. Main bias: SELL session high sweeps at full risk.'},
+    PULLBACK:{c:'BUY', l:'PULLBACK STATE',r:'RISK 0.5%', t:'Weekly UP + Daily DN — Main tide bullish, today dipped. BUY sweeps at half risk (0.5%).'},
+    RALLY:   {c:'SELL',l:'RALLY STATE',   r:'RISK 0.5%', t:'Weekly DN + Daily UP — Main tide bearish, today popped. SELL sweeps at half risk (0.5%).'}
   };
 
-  async function load() {
-    try {
-      const res = await fetch('signal.json?t=' + Date.now());
-      const d   = await res.json();
-      const sig = (d.signal || '').toUpperCase();
-      const m   = MAP[sig] || { cls:'WAIT', label:'— STATE', risk:'RISK —', desc:'Waiting for data.' };
+  async function _load(){
+    try{
+      var res=await fetch('./signal.json?_='+Date.now());
+      var d=await res.json();
+      var sig=(d.signal||'').toUpperCase();
+      var m=_m[sig]||{c:'WAIT',l:'— STATE',r:'RISK —',t:'Waiting for data.'};
 
-      // card stays white — only text/badge colors change
-      document.getElementById('sigBadge').className   = 'sig-badge ' + m.cls;
-      document.getElementById('sigBadge').textContent = m.label;
-      document.getElementById('riskBadge').textContent= m.risk;
+      document.getElementById('sigBadge').className='sig-badge '+m.c;
+      document.getElementById('sigBadge').textContent=m.l;
+      document.getElementById('riskBadge').textContent=m.r;
 
-      const act = document.getElementById('actionText');
-      act.className   = 'action '   + m.cls;
-      act.textContent = m.cls === 'BUY' ? 'BUY' : m.cls === 'SELL' ? 'SELL' : '—';
+      var a=document.getElementById('actionText');
+      a.className='action '+m.c;
+      a.textContent=m.c==='BUY'?'BUY':m.c==='SELL'?'SELL':'—';
 
-      const nm = document.getElementById('sigName');
-      nm.className   = 'sig-name ' + m.cls;
-      nm.textContent = sig;
+      var n=document.getElementById('sigName');
+      n.className='sig-name '+m.c;
+      n.textContent=sig;
 
-      document.getElementById('sigDesc').textContent = m.desc;
+      document.getElementById('sigDesc').textContent=m.t;
 
-      // daily change
-      const dc  = parseFloat(d.daily_change || 0);
-      const dEl = document.getElementById('dailyVal');
-      const dDir = (d.daily_dir || '').toUpperCase();
-      dEl.textContent = (dc >= 0 ? '+' : '') + Math.abs(dc).toFixed(2) + ' Bn ' + (dDir === 'UP' ? '▲' : '▼');
-      dEl.className   = 'chg-val ' + (dDir === 'UP' ? 'up' : 'dn');
+      var dc=parseFloat(d.daily_change||0);
+      var dd=(d.daily_dir||'').toUpperCase();
+      var dEl=document.getElementById('dailyVal');
+      dEl.textContent=(dc>=0?'+':'')+Math.abs(dc).toFixed(2)+' Bn '+(dd==='UP'?'▲':'▼');
+      dEl.className='chg-val '+(dd==='UP'?'up':'dn');
 
-      // weekly change
-      const wc  = parseFloat(d.weekly_change || 0);
-      const wEl = document.getElementById('weeklyVal');
-      const wDir = (d.weekly_dir || '').toUpperCase();
-      wEl.textContent = (wc >= 0 ? '+' : '') + Math.abs(wc).toFixed(2) + ' Bn ' + (wDir === 'UP' ? '▲' : '▼');
-      wEl.className   = 'chg-val ' + (wDir === 'UP' ? 'up' : 'dn');
+      var wc=parseFloat(d.weekly_change||0);
+      var wd=(d.weekly_dir||'').toUpperCase();
+      var wEl=document.getElementById('weeklyVal');
+      wEl.textContent=(wc>=0?'+':'')+Math.abs(wc).toFixed(2)+' Bn '+(wd==='UP'?'▲':'▼');
+      wEl.className='chg-val '+(wd==='UP'?'up':'dn');
 
-      document.getElementById('dateText').textContent = d.date    || '—';
-      document.getElementById('updText').textContent  = d.updated || '—';
-      document.getElementById('liveDot').className    = 'dot live';
-
-    } catch(e) {
-      document.getElementById('sigName').textContent = 'Error loading';
-    }
+      document.getElementById('dateText').textContent=d.date||'—';
+      document.getElementById('updText').textContent=d.updated||'—';
+      document.getElementById('liveDot').className='dot live';
+    }catch(e){}
   }
 
-  load();
-  setInterval(load, 60 * 60 * 1000);
+  _load();
+  setInterval(_load, 3600000);
 </script>
 </body>
 </html>
