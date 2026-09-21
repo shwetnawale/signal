@@ -2,8 +2,8 @@ name: Sync Signal
 
 on:
   schedule:
-    - cron: '*/5 * * * 1-5'   # every 5 mins on weekdays
-    - cron: '0 * * * 0,6'     # every hour on weekends
+    # 20:35 UTC = 2:05 AM IST, 21:35 UTC = 3:05 AM IST
+    - cron: '35 20,21 * * *'
   workflow_dispatch:       # manual trigger from GitHub UI
 
 permissions:
