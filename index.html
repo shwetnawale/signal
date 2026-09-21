@@ -4,98 +4,216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>Signal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
+    *{ margin:0; padding:0; box-sizing:border-box; }
 
-    body{
-      background:#0d0d0d;
-      color:#fff;
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:24px 16px;
+    body {
+      background: #f4f9f4;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(34,139,34,0.07) 0%, transparent 50%),
+        radial-gradient(circle at 90% 90%, rgba(0,128,0,0.05) 0%, transparent 50%);
+      color: #0d2e0d;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
-    .wrap{width:100%;max-width:400px;}
+    .wrap { width: 100%; max-width: 400px; }
 
-    /* ── top label ── */
-    .top-label{
-      font-size:10px;font-weight:700;letter-spacing:3px;
-      text-transform:uppercase;color:#444;
-      text-align:center;margin-bottom:24px;
+    /* ── header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .header-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+    .header-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #2e7d32;
     }
 
     /* ── main card ── */
-    .card{
-      border-radius:20px;padding:32px 24px;
-      margin-bottom:16px;
-      transition:all .4s ease;
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 24px rgba(0,100,0,0.08), 0 1px 4px rgba(0,100,0,0.04);
+      border: 1.5px solid rgba(46,125,50,0.12);
+      transition: all .3s ease;
     }
-    .card.BULLISH{background:rgba(0,210,90,.07);border:1.5px solid rgba(0,210,90,.35);}
-    .card.BEARISH{background:rgba(220,50,50,.07);border:1.5px solid rgba(220,50,50,.35);}
-    .card.PULLBACK{background:rgba(248,170,0,.07);border:1.5px solid rgba(248,170,0,.35);}
-    .card.RALLY{background:rgba(130,80,255,.07);border:1.5px solid rgba(130,80,255,.35);}
-    .card.WAIT{background:rgba(100,100,100,.07);border:1.5px solid rgba(100,100,100,.2);}
 
-    /* badge row */
-    .badge-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px;}
-    .sig-badge{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
-    .sig-badge.BULLISH{background:rgba(0,210,90,.15);color:#00d25a;}
-    .sig-badge.BEARISH{background:rgba(220,50,50,.15);color:#dc3232;}
-    .sig-badge.PULLBACK{background:rgba(248,170,0,.15);color:#f8aa00;}
-    .sig-badge.RALLY{background:rgba(130,80,255,.15);color:#8250ff;}
-    .sig-badge.WAIT{background:rgba(100,100,100,.15);color:#666;}
+    /* ── badge row ── */
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
 
-    .risk-badge{font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 12px;border-radius:20px;
-      background:rgba(255,255,255,.05);color:#888;border:1px solid rgba(255,255,255,.08);}
+    .sig-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+    .sig-badge.BUY    { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+    .sig-badge.SELL   { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
+    .sig-badge.WAIT   { background: #f5f5f5; color: #777;    border: 1px solid #e0e0e0; }
 
-    /* action word */
-    .action{font-size:64px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:10px;}
-    .action.BUY{color:#00d25a;}
-    .action.SELL{color:#dc3232;}
-    .action.WAIT{color:#555;}
+    .risk-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: #f1f8e9;
+      color: #33691e;
+      border: 1px solid #c5e1a5;
+    }
 
-    /* label under action */
-    .sig-name{font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;opacity:.7;}
-    .sig-name.BUY{color:#00d25a;}
-    .sig-name.SELL{color:#dc3232;}
-    .sig-name.WAIT{color:#555;}
+    /* ── big action ── */
+    .action {
+      font-size: 80px;
+      font-weight: 900;
+      letter-spacing: -3px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .action.BUY  { color: #1b5e20; }
+    .action.SELL { color: #c62828; }
+    .action.WAIT { color: #bdbdbd; }
 
-    .sig-desc{font-size:12px;color:#555;line-height:1.6;margin-top:4px;}
+    /* ── signal name ── */
+    .sig-name {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .sig-name.BUY  { color: #2e7d32; }
+    .sig-name.SELL { color: #c62828; }
+    .sig-name.WAIT { color: #bdbdbd; }
+
+    /* ── description ── */
+    .sig-desc {
+      font-size: 12.5px;
+      color: #5a7a5a;
+      line-height: 1.65;
+      padding-top: 10px;
+      border-top: 1px solid #f0f4f0;
+      margin-top: 10px;
+    }
+
+    /* ── divider ── */
+    .divider { height: 1px; background: #e8f0e8; margin: 14px 0; }
 
     /* ── change boxes ── */
-    .changes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-    .chg-box{background:#141414;border-radius:12px;padding:14px 16px;border:1px solid #1e1e1e;}
-    .chg-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#444;margin-bottom:6px;}
-    .chg-val{font-size:18px;font-weight:800;line-height:1;}
-    .chg-val.up{color:#00d25a;}
-    .chg-val.dn{color:#dc3232;}
-    .chg-sub{font-size:10px;color:#444;margin-top:3px;}
+    .changes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
 
-    /* meta */
-    .meta{text-align:center;font-size:10px;color:#333;line-height:2;}
-    .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;background:#333;}
-    .dot.live{background:#00d25a;animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+    .chg-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 12px rgba(0,100,0,0.06);
+      border: 1.5px solid rgba(46,125,50,0.10);
+    }
+    .chg-lbl {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #a5b5a5;
+      margin-bottom: 8px;
+    }
+    .chg-val {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .chg-val.up { color: #1b5e20; }
+    .chg-val.dn { color: #c62828; }
+    .chg-sub {
+      font-size: 10px;
+      color: #a5b5a5;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ── meta ── */
+    .meta {
+      text-align: center;
+      font-size: 11px;
+      color: #b0c4b0;
+      line-height: 2;
+    }
+    .dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 5px;
+      background: #c8e6c9;
+      vertical-align: middle;
+    }
+    .dot.live {
+      background: #43a047;
+      animation: pulse 2.5s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:.4; transform:scale(.75); }
+    }
+
+    /* ── watermark ── */
+    .wm {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #c8e6c9;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="top-label">Macro Liquidity Signal</div>
+  <div class="header">
+    <div class="header-icon">💹</div>
+    <div class="header-title">Daily Trading Signal</div>
+  </div>
 
   <!-- main card -->
-  <div class="card WAIT" id="card">
+  <div class="card" id="card">
     <div class="badge-row">
       <span class="sig-badge WAIT" id="sigBadge">—</span>
-      <span class="risk-badge" id="riskBadge">—</span>
+      <span class="risk-badge"     id="riskBadge">RISK —</span>
     </div>
+
     <div class="action WAIT" id="actionText">—</div>
     <div class="sig-name WAIT" id="sigName">Loading...</div>
-    <div class="sig-desc" id="sigDesc"></div>
+    <div class="sig-desc" id="sigDesc">Fetching latest signal data...</div>
   </div>
 
   <!-- changes -->
@@ -114,19 +232,21 @@
 
   <!-- meta -->
   <div class="meta">
-    <span class="dot live" id="liveDot"></span>
-    <span id="dateText">—</span><br>
+    <span class="dot" id="liveDot"></span>
+    Signal date: <span id="dateText">—</span><br>
     Updated: <span id="updText">—</span>
   </div>
+
+  <div class="wm">Macro Liquidity</div>
 
 </div>
 
 <script>
   const MAP = {
-    BULLISH:  { action:'BUY',  cls:'BUY',  badge:'BULLISH',  risk:'1%',  desc:'Weekly UP + Daily UP → Full bull tide. Buy session low sweeps at full risk.' },
-    BEARISH:  { action:'SELL', cls:'SELL', badge:'BEARISH',  risk:'1%',  desc:'Weekly DN + Daily DN → Full bear tide. Sell session high sweeps at full risk.' },
-    PULLBACK: { action:'BUY',  cls:'BUY',  badge:'PULLBACK', risk:'0.5%',desc:'Weekly UP + Daily DN → Main tide bullish, today dipped. Buy sweeps at half risk.' },
-    RALLY:    { action:'SELL', cls:'SELL', badge:'RALLY',    risk:'0.5%',desc:'Weekly DN + Daily UP → Main tide bearish, today popped. Sell sweeps at half risk.' },
+    BULLISH:  { cls:'BUY',  label:'BULLISH STATE',  risk:'RISK 1%',   desc:'Weekly UP + Daily UP — Full bull tide. Main bias: BUY session low sweeps at full risk.' },
+    BEARISH:  { cls:'SELL', label:'BEARISH STATE',  risk:'RISK 1%',   desc:'Weekly DN + Daily DN — Full bear tide. Main bias: SELL session high sweeps at full risk.' },
+    PULLBACK: { cls:'BUY',  label:'PULLBACK STATE', risk:'RISK 0.5%', desc:'Weekly UP + Daily DN — Main tide is bullish, today dipped. BUY sweeps at half risk (0.5%).' },
+    RALLY:    { cls:'SELL', label:'RALLY STATE',    risk:'RISK 0.5%', desc:'Weekly DN + Daily UP — Main tide is bearish, today popped. SELL sweeps at half risk (0.5%).' },
   };
 
   async function load() {
@@ -134,47 +254,48 @@
       const res = await fetch('signal.json?t=' + Date.now());
       const d   = await res.json();
       const sig = (d.signal || '').toUpperCase();
-      const m   = MAP[sig] || { action:'—', cls:'WAIT', badge:'—', risk:'—', desc:'Waiting for data.' };
+      const m   = MAP[sig] || { cls:'WAIT', label:'— STATE', risk:'RISK —', desc:'Waiting for data.' };
 
-      // card
-      document.getElementById('card').className       = 'card '     + sig;
-      document.getElementById('sigBadge').className   = 'sig-badge ' + sig;
-      document.getElementById('sigBadge').textContent = m.badge + ' STATE';
-      document.getElementById('riskBadge').textContent= 'RISK ' + m.risk;
+      // card stays white — only text/badge colors change
+      document.getElementById('sigBadge').className   = 'sig-badge ' + m.cls;
+      document.getElementById('sigBadge').textContent = m.label;
+      document.getElementById('riskBadge').textContent= m.risk;
 
       const act = document.getElementById('actionText');
-      act.className   = 'action ' + m.cls;
-      act.textContent = m.action;
+      act.className   = 'action '   + m.cls;
+      act.textContent = m.cls === 'BUY' ? 'BUY' : m.cls === 'SELL' ? 'SELL' : '—';
 
       const nm = document.getElementById('sigName');
       nm.className   = 'sig-name ' + m.cls;
-      nm.textContent = m.badge;
+      nm.textContent = sig;
 
       document.getElementById('sigDesc').textContent = m.desc;
 
       // daily change
       const dc  = parseFloat(d.daily_change || 0);
       const dEl = document.getElementById('dailyVal');
-      dEl.textContent = (dc >= 0 ? '+' : '') + dc.toFixed(2) + ' Bn (' + (d.daily_dir === 'UP' ? '▲ UP' : '▼ DN') + ')';
-      dEl.className   = 'chg-val ' + (d.daily_dir === 'UP' ? 'up' : 'dn');
+      const dDir = (d.daily_dir || '').toUpperCase();
+      dEl.textContent = (dc >= 0 ? '+' : '') + Math.abs(dc).toFixed(2) + ' Bn ' + (dDir === 'UP' ? '▲' : '▼');
+      dEl.className   = 'chg-val ' + (dDir === 'UP' ? 'up' : 'dn');
 
       // weekly change
       const wc  = parseFloat(d.weekly_change || 0);
       const wEl = document.getElementById('weeklyVal');
-      wEl.textContent = (wc >= 0 ? '+' : '') + wc.toFixed(2) + ' Bn (' + (d.weekly_dir === 'UP' ? '▲ UP' : '▼ DN') + ')';
-      wEl.className   = 'chg-val ' + (d.weekly_dir === 'UP' ? 'up' : 'dn');
+      const wDir = (d.weekly_dir || '').toUpperCase();
+      wEl.textContent = (wc >= 0 ? '+' : '') + Math.abs(wc).toFixed(2) + ' Bn ' + (wDir === 'UP' ? '▲' : '▼');
+      wEl.className   = 'chg-val ' + (wDir === 'UP' ? 'up' : 'dn');
 
       document.getElementById('dateText').textContent = d.date    || '—';
       document.getElementById('updText').textContent  = d.updated || '—';
       document.getElementById('liveDot').className    = 'dot live';
 
     } catch(e) {
-      document.getElementById('sigName').textContent = 'Error loading signal';
+      document.getElementById('sigName').textContent = 'Error loading';
     }
   }
 
   load();
-  setInterval(load, 60 * 60 * 1000); // refresh every hour
+  setInterval(load, 60 * 60 * 1000);
 </script>
 </body>
 </html>
