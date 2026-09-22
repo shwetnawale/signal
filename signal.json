@@ -1,10 +1,10 @@
 {
-  "signal": "BEARISH",
-  "date": "2026-09-21",
-  "daily_change": -0.01,
-  "daily_dir": "DN",
-  "weekly_change": -107.94,
+  "signal": "RALLY",
+  "date": "2026-09-22",
+  "daily_change": 0.13,
+  "daily_dir": "UP",
+  "weekly_change": -6.66,
   "weekly_dir": "DN",
-  "risk": "1%",
-  "updated": "2026-09-22 05:02 IST"
+  "risk": "0.5%",
+  "updated": "2026-09-23 04:44 IST"
 }
